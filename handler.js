@@ -435,7 +435,7 @@ module.exports = {
                     sPromote: '',
                     sDemote: '',
                     delete: true,
-                    antiLink: true,
+                    antiLink: false,
                     viewonce: false,
                     antiToxic: true,
                 }
@@ -691,7 +691,6 @@ module.exports = {
                  console.log(m, m.quoted, e)
              }
             if (opts['autoread']) await this.readMessages([m.key])
-		await this.readMessages([m.key])
         }
     },
    async participantsUpdate({ id, participants, action }) {
@@ -711,7 +710,7 @@ module.exports = {
                     for (let user of participants) {
                         let pp = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT9mFzSckd12spppS8gAJ2KB2ER-ccZd4pBbw&usqp=CAU'
                         try {
-                            pp = await this.profilePictureUrl(user)
+                             pp = await this.profilePictureUrl(user, 'image')
                         } catch (e) {
                         } finally {
                             text = (action === 'add' ? (chat.sWelcome || this.welcome || conn.welcome || 'Welcome, @user!').replace('@subject', await this.getName(id)).replace('@desc', groupMetadata.desc.toString()) :
@@ -719,6 +718,7 @@ module.exports = {
                             this.sendMessage(id, {
                             text: text,
                             contextInfo: {
+			    mentionedJid: [user],
                             externalAdReply: {  
                             title: action === 'add' ? 'Selamat Datang' : 'Selamat tinggal',
                             body: global.wm,
@@ -772,7 +772,7 @@ global.dfail = (type, m, conn) => {
         private: 'Perintah ini hanya dapat digunakan di Chat Pribadi!',
         admin: 'Perintah ini hanya untuk *Admin* grup!',
         botAdmin: 'Jadikan bot sebagai *Admin* untuk menggunakan perintah ini!',
-        unreg: 'Silahkan daftar untuk menggunakan fitur ini dengan cara mengetik:\n\n*#daftar nama.umur*\n\nContoh: *#daftar Manusia.16*',
+        unreg: 'Silahkan daftar untuk menggunakan fitur ini dengan cara mengetik:\n\n*#daftar nama.umur*\n\nContoh: *#daftar Mansur.16*',
         restrict: 'Fitur ini di *disable*!'
     }[type]
     if (msg) return m.reply(msg)
