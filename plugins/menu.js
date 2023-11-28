@@ -33,11 +33,14 @@ let tags = {
   'maker': 'MENU MAKER',
   'owner': 'MENU OWNER',
   'Pengubah Suara': 'PENGUBAH SUARA',
+  'premium': 'PREMIUM MENU',
   'quotes' : 'MENU QUOTES',
   'stalk': 'MENU STALK',
   'shortlink': 'SHORT LINK',
   'tools': 'MENU TOOLS',
   'anonymous': 'ANONYMOUS CHAT',
+  'admin': 'ADMIN', 
+  'bokep': 'FILE', 
   '': 'NO CATEGORY',
 }
 const defaultMenu = {
@@ -66,7 +69,7 @@ let handler = async (m, { conn, usedPrefix: _p }) => {
     let package = JSON.parse(await fs.promises.readFile(path.join(__dirname, '../package.json')).catch(_ => '{}'))
     let { exp, limit, level, role } = global.db.data.users[m.sender]
     let { min, xp, max } = levelling.xpRange(level, global.multiplier)
-    let name =  `@${m.sender.split`@`[0]}`
+    let name = await conn.getName(m.sender)
     let d = new Date(new Date + 3600000)
     let locale = 'id'
     const wib = moment.tz('Asia/Jakarta').format("HH:mm:ss")
@@ -159,17 +162,23 @@ text = typeof conn.menu == 'string' ? conn.menu : typeof conn.menu == 'object' ?
   extendedTextMessage:{
                 text: text, 
                 contextInfo: {
-                mentionedJid: [m.sender],
                      externalAdReply: {
                         title: date,
                         mediaType: 1,
                         previewType: 0,
                         renderLargerThumbnail: true,
-                        thumbnailUrl: 'https://telegra.ph/file/3a34bfa58714bdef500d9.jpg',
-                        sourceUrl: 'https://api.botcahx.live'
+                        thumbnailUrl: 'https://telegra.ph/file/474233144db6bade62cc4.jpg',
+                        sourceUrl: 'https://chat.whatsapp.com/HbUKNzg8E3Z3zNebgf5Msz'
                     }
                 }, mentions: [m.sender]
 }}, {})
+    conn.sendFile(m.chat, fs.readFileSync('./menu.mp3'), 'menu.mp3', null, m, true, {
+      type: 'audioMessage',
+      ptt: true,
+      seconds: 9999,
+      fileLength: 99999,
+      ptt: true, contextInfo: { forwadingScore: 999, isForwarded: true, externalAdReply: { title: 'Playing Now...', body: wm, sourceUrl: instagram, thumbnailUrl: 'https://telegra.ph/file/07338a9897b9fe0bcb37a.jpg'}}
+    })
   } catch (e) {
     conn.reply(m.chat, 'Maaf, menu sedang error', m)
     throw e
@@ -183,7 +192,7 @@ handler.exp = 3
 
 module.exports = handler
 
-
+const more = String.fromCharCode(8206)
 function clockString(ms) {
   let h = isNaN(ms) ? '--' : Math.floor(ms / 3600000)
   let m = isNaN(ms) ? '--' : Math.floor(ms / 60000) % 60
